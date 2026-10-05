@@ -1,15 +1,28 @@
 {
-  description = "A very basic flake";
+  description = "Delovno okolje za programiranje-1";
 
   inputs = {
     nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.zst";
   };
 
   outputs = inputs: {
-    packages = builtins.mapAttrs (system: pkgs: {
-      hello = pkgs.hello;
-
-      default = inputs.self.packages.${system}.hello;
+    devShells = builtins.mapAttrs (system: pkgs: {
+      default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          curl
+          python3
+          pkg-config
+          zlib
+          unzip
+        ];
+        packages = with pkgs; [
+          ocaml
+          ocamlPackages.ocaml-lsp
+          ocamlPackages.ocamlformat
+          ocamlPackages.utop
+          elan
+        ];
+      };
     }) inputs.nixpkgs.legacyPackages;
   };
 }
